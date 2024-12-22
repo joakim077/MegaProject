@@ -1,0 +1,59 @@
+apiVersion: mysql.oracle.com/v2
+kind: InnoDBCluster
+metadata:
+  name: mycluster
+  labels:
+    app: mysql
+spec:
+  secretName: mycluster-cluster-secret
+  instances: 2
+  router:
+    instances: 1
+  # initDB:
+  #   clone:
+  #     donorUrl: mycluster-0.mycluster-instances.another.svc.cluster.local:3306
+  #     rootUser: root
+  #     secretKeyRef:
+  #       name: mysecret
+  mycnf: |
+    [mysqld]
+    max_connections=162
+  podSpec:
+    containers:
+    - name: mysql
+      environment:
+        MYSQL_USER: "john"
+        MYSQL_PASSWORD: "Test@123"
+      resources:
+        requests:
+          memory: "250Mi"
+          cpu: "260m"
+        limits:
+          memory: "400Mi"
+          cpu: "400m"
+  tlsUseSelfSigned: true
+  datadirVolumeClaimTemplate:
+    accessModes: [ "ReadWriteOnce" ]
+    resources:
+      requests:
+        storage: 1Gi
+
+---
+
+apiVersion: mysql.oracle.com/v2
+kind: InnoDBCluster
+metadata:
+  name: mycluster
+spec:
+  secretName: mycluster-cluster-secret
+  instances: 3
+  router:
+    instances: 1
+  tlsUseSelfSigned: true
+  datadirVolumeClaimTemplate:
+    accessModes: [ "ReadWriteOnce" ]
+    resources:
+      requests:
+        storage: 3Gi
+    # storageClassName: gp2
+
