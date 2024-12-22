@@ -50,7 +50,7 @@ create cluster
 associate oidc provider
   ```bash
   eksctl utils associate-iam-oidc-provider \
-      --region us-east-1 \
+      --region ap-south-1 \
       --cluster mycluster \
       --approve
   ```
