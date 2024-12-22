@@ -84,7 +84,6 @@ eksctl create nodegroup --cluster=mycluster \
                         --alb-ingress-access \
                         --node-private-networking
 ```
-### 2. Run Database
 
 Create IAM role for service account
 ```bash
@@ -108,13 +107,8 @@ Deploy EBS CSI Driver (Add on)
       --service-account-role-arn $ARN --force
   ```
 
-Deploy DataBase servers.
-```bash    
-    kubectl apply -f mysql-configmap.yaml
+### 2. Run Database
 
-    kubectl apply -f db-secret.yaml
-
-```
 Install MySQL Operator for Kubernetes
 
 - deploy the Custom Resource Definition (CRDs):
@@ -130,7 +124,13 @@ Install MySQL Operator for Kubernetes
   ```bash
     kubectl get deployment -n mysql-operator mysql-operator
   ```
+Create cofigmap and secret
+```bash    
+    kubectl apply -f configmap.yaml
 
+    kubectl apply -f db-secret.yaml
+
+```
 - Deploy  MySQL InnoDB Cluster
   ```bash
       kubectl create secret generic mypwds \
