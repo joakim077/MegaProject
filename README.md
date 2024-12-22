@@ -191,6 +191,11 @@ Install Nginx Ingress Controller
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.9.4/deploy/static/provider/cloud/deploy.yaml
 ```
 
+It will create a LoadBlancer, map the expernal IP of LoadBalancer with your domain
+```bash
+kubectl get svc -n ingress-nginx
+```
+
 Apply Ingress Resource Manifest
 ```bash
 kubectl apply -f ingress.yaml
