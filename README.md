@@ -154,14 +154,14 @@ Create cofigmap and secret
     Please provide the password for 'root@mycluster': ******
     MySQL mycluster JS>
   ```
-- Exec into mycluster-0 pod and create db
+- Exec into mycluster-0 pod and create DB
   ```bash
-    kubectl exec -it mycluster-0 -- bash
-    mysql -h localhost -uroot -pTest@123
-    create db BankDB;
+    kubectl exec -it mycluster-0 -- mysqlsh
+    \connect root@localhost
+    # provide password
+    create database BankDB;
   ```
-**Note** JDBC URL
-{clustername}.svc.cluster.local
+**Note** enter ctrl + d to exit from mysqlsh
 
 ### 3. Deploy application
 

@@ -31,12 +31,12 @@ spec:
                 name: myconfigmap
                 key: dburl
           resources:
-          limits:
-            memory: "256Mi"
-            cpu: "500m"
-          requests:
-            memory: "128Mi"
-            cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
           ports:
           - containerPort: 8080
           readinessProbe:
