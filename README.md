@@ -1,16 +1,105 @@
 # Run Bank app in EKS Cluster
 
-### 1. EKS Cluster Configuration
-skip for now
+### Launch an EC2 instance and install AWS CLI and EKSCTL
+- Launch an Ubuntu EC2 instance of t2.medium size in AWS.
+- Install aws cli
+  ```bash
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 
+  curl -o awscliv2.sig https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip.sig
+
+  unzip awscliv2.zip
+
+  sudo ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
+
+  # Confirm installation by running
+  aws --version
+  ```
+- Configure aws cli 
+  ```bash
+    aws configure 
+    # provide AWS Access key ID, AWS Secret Acccess key ID, default region and output format.
+
+    # confirm installaation by running
+    aws s3 ls
+  ```
+
+- Install eksctl
+  ```bash
+  # for ARM systems, set ARCH to: `arm64`, `armv6` or `armv7`
+  ARCH=amd64
+  PLATFORM=$(uname -s)_$ARCH
+
+  curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
+
+  # (Optional) Verify checksum
+  curl -sL "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_checksums.txt" | grep $PLATFORM | sha256sum --check
+
+  tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
+
+  sudo mv /tmp/eksctl /usr/local/bin
+  ```
+### 1. EKS Cluster Creation and Configuration
+create cluster
+  ```bash
+  eksctl create cluster --name=mycluster \
+                        --region=ap-south-1 \
+                        --zones=ap-south-1a,ap-south-1b \
+                        --without-nodegroup 
+  ```
+associate oidc provider
+  ```bash
+  eksctl utils associate-iam-oidc-provider \
+      --region us-east-1 \
+      --cluster mycluster \
+      --approve
+  ```
+create nodegroup and add nodes
+```bash
+eksctl create nodegroup --cluster=mycluster \
+                        --region=ap-south-1 \
+                        --name=node-grp-1 \
+                        --node-type=t2.medium \
+                        --nodes-min=2 \
+                        --nodes-max=3 \
+                        --node-volume-size=20 \
+                        --managed \
+                        --asg-access \
+                        --external-dns-access \
+                        --full-ecr-access \
+                        --appmesh-access \
+                        --alb-ingress-access \
+                        --node-private-networking
+```
 ### 2. Run Database
-Deploy DataBase servers
+
+Create IAM role for service account
+```bash
+eksctl create iamserviceaccount \
+    --name ebs-csi-controller-sa \
+    --namespace kube-system \
+    --cluster mycluster \
+    --role-name AmazonEKS_EBS_CSI_DriverRole \
+    --role-only \
+    --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy \
+    --approve
+```
+
+get ARN of IAM Role
+  ```bash
+  ARN=$(aws iam get-role --role-name AmazonEKS_EBS_CSI_DriverRole --query 'Role.Arn' --output text)
+  ```
+Deploy EBS CSI Driver (Add on)
+  ```bash
+  eksctl create addon --cluster mycluster --name aws-ebs-csi-driver --version latest \
+      --service-account-role-arn $ARN --force
+  ```
+
+Deploy DataBase servers.
 ```bash    
-    # kubectl apply -f mysql-configmap.yaml
+    kubectl apply -f mysql-configmap.yaml
 
     kubectl apply -f db-secret.yaml
-
-    kubectl apply -f app-config.yaml
 
 ```
 Install MySQL Operator for Kubernetes
@@ -36,7 +125,7 @@ Install MySQL Operator for Kubernetes
         --from-literal=rootHost=% \
         --from-literal=rootPassword="superSecret"
       
-      kubectl apply -f mysql-innodb.yaml
+      kubectl apply -f innodbcluster.yaml
 
       # it will create 2 service.
       # clusterIP and headless.
