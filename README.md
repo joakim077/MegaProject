@@ -230,5 +230,5 @@ sudo apt-get install k6
 
 Generate load to application
 ```bash
-k6s load.js
+k6 run load.js
 ```
