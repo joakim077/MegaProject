@@ -1,6 +1,6 @@
 # Run Bank app in EKS Cluster
 
-### Launch an EC2 instance and install AWS CLI and EKSCTL
+### Launch an EC2 instance and install AWS CLI and eksctl and kubectl
 - Launch an Ubuntu EC2 instance of t2.medium size in AWS.
 - Install aws cli
   ```bash
@@ -39,6 +39,19 @@
 
   sudo mv /tmp/eksctl /usr/local/bin
   ```
+
+Install kubectl
+```bash
+ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+
+ echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+
+ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+ kubectl version --client # check installation
+```
 ### 1. EKS Cluster Creation and Configuration
 create cluster
   ```bash
