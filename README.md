@@ -114,7 +114,6 @@ Install MySQL Operator for Kubernetes
 - deploy the Custom Resource Definition (CRDs):
     ```bash
       kubectl apply -f https://raw.githubusercontent.com/mysql/mysql-operator/9.1.0-2.2.2/deploy/deploy-crds.yaml
-      #8.0.33-2.0.9 
     ```
 - deploy MySQL Operator for Kubernetes:
     ```bash
@@ -232,3 +231,6 @@ Generate load to application
 ```bash
 k6 run load.js
 ```
+
+
+For detailed CI/CD guide, refer to the [CI/CD Guideline for the Project](cicd-guideline.md).
