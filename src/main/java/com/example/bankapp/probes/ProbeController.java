@@ -1,4 +1,5 @@
-package com.example.bankapp;
+package com.example.bankapp.probes;
+
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProbeController {
 
-    private boolean isAppReady = false;
-    private boolean isAppStarted = false;
+    private boolean isAppReady = true;
+    private boolean isAppStarted = true;
 
     @GetMapping("/liveness")
     public ResponseEntity<String> livenessProbe() {

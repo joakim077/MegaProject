@@ -1,4 +1,4 @@
-package com.example.bankapp;
+package com.example.bankapp.service;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.stereotype.Service;
