@@ -6,4 +6,4 @@ metadata:
     app: myapplication
 data:
   dbuser: root
-  dburl: jdbc:mysql://mycluster.default.svc.cluster.local:3306/BankDB?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+  dburl: jdbc:mysql://mycluster.svc.cluster.local:3306/BankDB?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
