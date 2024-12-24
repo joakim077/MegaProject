@@ -19,3 +19,8 @@ helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack --
 kubectl get secret --namespace monitoring kube-prometheus-stack-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 kubectl port-forward svc/grafana 3000:80 -n monitoring --address=0.0.0.0
 ```
+
+### Apply Sevice Monitor
+```bash
+kubectl apply -f servicemonitor.yaml
+```
